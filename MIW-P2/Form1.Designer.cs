@@ -91,12 +91,13 @@ namespace MIW_P2
             // 
             this.textBoxDataToClassify.Location = new System.Drawing.Point(13, 112);
             this.textBoxDataToClassify.Name = "textBoxDataToClassify";
+            this.textBoxDataToClassify.PlaceholderText = "Values separated by space (ex. 1 2 3 4 5 ...)";
             this.textBoxDataToClassify.Size = new System.Drawing.Size(425, 23);
             this.textBoxDataToClassify.TabIndex = 4;
             // 
             // textBoxK
             // 
-            this.textBoxK.Location = new System.Drawing.Point(146, 160);
+            this.textBoxK.Location = new System.Drawing.Point(211, 161);
             this.textBoxK.Name = "textBoxK";
             this.textBoxK.Size = new System.Drawing.Size(106, 23);
             this.textBoxK.TabIndex = 5;
@@ -113,7 +114,7 @@ namespace MIW_P2
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(146, 143);
+            this.label3.Location = new System.Drawing.Point(211, 143);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(16, 15);
             this.label3.TabIndex = 7;
@@ -157,7 +158,7 @@ namespace MIW_P2
             "Logarithm"});
             this.comboBox1.Location = new System.Drawing.Point(13, 161);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 23);
+            this.comboBox1.Size = new System.Drawing.Size(192, 23);
             this.comboBox1.TabIndex = 11;
             // 
             // label5
@@ -172,12 +173,13 @@ namespace MIW_P2
             // buttonClassify
             // 
             this.buttonClassify.Enabled = false;
-            this.buttonClassify.Location = new System.Drawing.Point(315, 159);
+            this.buttonClassify.Location = new System.Drawing.Point(323, 161);
             this.buttonClassify.Name = "buttonClassify";
-            this.buttonClassify.Size = new System.Drawing.Size(75, 23);
+            this.buttonClassify.Size = new System.Drawing.Size(114, 23);
             this.buttonClassify.TabIndex = 13;
             this.buttonClassify.Text = "Classify";
             this.buttonClassify.UseVisualStyleBackColor = true;
+            this.buttonClassify.Click += new System.EventHandler(this.buttonClassify_Click);
             // 
             // buttonClearData
             // 

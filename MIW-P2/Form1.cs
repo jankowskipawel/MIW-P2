@@ -89,10 +89,6 @@ namespace MIW_P2
                         }
                     }
                 }
-                if (dataset.attributes.Count == 0)
-                {
-                    textBoxLog.Text += $"WARNING: dataset is empty!{Environment.NewLine}";
-                }
                 textBoxLog.Text += $"Dataset loaded.{Environment.NewLine}";
                 buttonLoadData.Enabled = false;
                 buttonLoadData.Text = "Dataset loaded";
@@ -183,6 +179,11 @@ namespace MIW_P2
                 }
             }
             return result;
+        }
+
+        private void buttonClassify_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
