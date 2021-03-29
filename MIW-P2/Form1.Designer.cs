@@ -45,6 +45,10 @@ namespace MIW_P2
             this.label5 = new System.Windows.Forms.Label();
             this.buttonClassify = new System.Windows.Forms.Button();
             this.buttonClearData = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -97,9 +101,9 @@ namespace MIW_P2
             // 
             // textBoxK
             // 
-            this.textBoxK.Location = new System.Drawing.Point(211, 161);
+            this.textBoxK.Location = new System.Drawing.Point(122, 161);
             this.textBoxK.Name = "textBoxK";
-            this.textBoxK.Size = new System.Drawing.Size(106, 23);
+            this.textBoxK.Size = new System.Drawing.Size(61, 23);
             this.textBoxK.TabIndex = 5;
             // 
             // label2
@@ -114,7 +118,7 @@ namespace MIW_P2
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(211, 143);
+            this.label3.Location = new System.Drawing.Point(122, 143);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(16, 15);
             this.label3.TabIndex = 7;
@@ -158,7 +162,7 @@ namespace MIW_P2
             "Logarithm"});
             this.comboBox1.Location = new System.Drawing.Point(13, 161);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(192, 23);
+            this.comboBox1.Size = new System.Drawing.Size(103, 23);
             this.comboBox1.TabIndex = 11;
             // 
             // label5
@@ -173,9 +177,9 @@ namespace MIW_P2
             // buttonClassify
             // 
             this.buttonClassify.Enabled = false;
-            this.buttonClassify.Location = new System.Drawing.Point(323, 161);
+            this.buttonClassify.Location = new System.Drawing.Point(367, 161);
             this.buttonClassify.Name = "buttonClassify";
-            this.buttonClassify.Size = new System.Drawing.Size(114, 23);
+            this.buttonClassify.Size = new System.Drawing.Size(70, 23);
             this.buttonClassify.TabIndex = 13;
             this.buttonClassify.Text = "Classify";
             this.buttonClassify.UseVisualStyleBackColor = true;
@@ -192,11 +196,45 @@ namespace MIW_P2
             this.buttonClearData.UseVisualStyleBackColor = true;
             this.buttonClearData.Click += new System.EventHandler(this.buttonClearData_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButton2);
+            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Location = new System.Drawing.Point(189, 144);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(172, 40);
+            this.groupBox1.TabIndex = 15;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Method:";
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(36, 17);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(28, 19);
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "I";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(115, 17);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(31, 19);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.Text = "II";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 450);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonClearData);
             this.Controls.Add(this.buttonClassify);
             this.Controls.Add(this.label5);
@@ -217,6 +255,8 @@ namespace MIW_P2
             this.MinimumSize = new System.Drawing.Size(465, 489);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -240,6 +280,9 @@ namespace MIW_P2
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button buttonClassify;
         private System.Windows.Forms.Button buttonClearData;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
 
