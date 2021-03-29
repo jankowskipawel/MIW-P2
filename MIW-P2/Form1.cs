@@ -202,6 +202,7 @@ namespace MIW_P2
                 {
                     objectToClassify.Add(Double.Parse(dataString));
                 }
+                //Calculate metric values
                 List<List<double>> transposedList = TransposeList(dataset.normalizedAttributes);
                 List<List<double>> calculatedMetricValues = new List<List<double>>();
                 foreach (var classifiedObject in transposedList)
@@ -224,9 +225,36 @@ namespace MIW_P2
                         default:
                             tmp = Euclidean(classifiedObject, objectToClassify);
                             break;
-
                     }
                     calculatedMetricValues.Add(tmp);
+                }
+                //Classify object
+                //METHOD 1 (TAKE k SMALLEST VALUES FROM CALCULATED METRIC VALUES)
+                if (radioButton1.Checked)
+                {
+                    if (Int32.Parse(textBoxK.Text) > calculatedMetricValues.Count || Int32.Parse(textBoxK.Text) <= 0)
+                    {
+                        MessageBox.Show($"Invalid k value (Max = {calculatedMetricValues.Count} for this data and method)");
+                        return;
+                    }
+                    else
+                    {
+                        int k = Int32.Parse(textBoxK.Text);
+                        List<List<double>> sortedList = calculatedMetricValues.OrderBy(x => x[0]).ToList();
+                        List<List<double>> smallestValues = new List<List<double>>();
+                        for (int i = 0; i < k; i++)
+                        {
+                            smallestValues.Add(sortedList[i]);
+                        }
+                        double decision = MakeDecision(smallestValues);
+                        textBoxLog.Text += $"Decision for given data is: {decision}.{Environment.NewLine}";
+                        ScrollLogToBottom();
+                    }
+                }
+                //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
+                else
+                {
+                    
                 }
             }
         }
@@ -320,5 +348,24 @@ namespace MIW_P2
             }
             return result;
         }
+
+        double MakeDecision(List<List<double>> data)
+        {
+            Dictionary<double, int> dict = new Dictionary<double, int>();
+            foreach (var x in data)
+            {
+                if (!dict.ContainsKey(x[1]))
+                {
+                    dict.Add(x[1], 1);
+                }
+                else
+                {
+                    dict[x[1]] += 1;
+                }
+            }
+            //return key of greatest value
+            return dict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+        }
+
     }
 }
