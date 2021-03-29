@@ -105,6 +105,8 @@ namespace MIW_P2
             buttonLoadData.Enabled = true;
             buttonLoadData.Text = "Load data";
             buttonClearData.Enabled = false;
+            buttonClassify.Enabled = false;
+            textBoxLog.Text += $"Data cleared from memory.{Environment.NewLine}";
         }
 
         private void ScrollLogToBottom()
@@ -115,12 +117,12 @@ namespace MIW_P2
 
         private void NormalizeData()
         {
-            List<List<object>> normalizedAttributes = new List<List<object>>(dataset.attributes.Count);
+            List<List<double>> normalizedAttributes = new List<List<double>>(dataset.attributes.Count);
             for (int i = 0; i < dataset.attributes.Count; i++)
             {
                 if (dataset.attributeTypes[i] == "numeric")
                 {
-                    List<float> tmpList = new List<float>();
+                    List<double> tmpList = new List<double>();
                     foreach (var f in dataset.attributes[i])
                     {
                         if (Convert.ToString(f) == "?")
@@ -134,7 +136,7 @@ namespace MIW_P2
                     }
                     double maximum = (double)tmpList.Max();
                     double minimum = (double)tmpList.Min();
-                    List<object> normalizedColumn = new List<object>(dataset.attributes[i].Count);
+                    List<double> normalizedColumn = new List<double>(dataset.attributes[i].Count);
                     for (int j = 0; j < dataset.attributes[i].Count; j++)
                     {
                         double normalizedValue = ((double)tmpList[j] - minimum) / (maximum - minimum);
@@ -146,7 +148,7 @@ namespace MIW_P2
                 {
                     List<string> uniqueStrings = CreateUniqueList(dataset.attributes[i]);
                     int length = uniqueStrings.Count;
-                    List<object> normalizedColumn = new List<object>();
+                    List<double> normalizedColumn = new List<double>();
                     foreach (var x in dataset.attributes[i])
                     {
                         double tmp;
@@ -164,7 +166,7 @@ namespace MIW_P2
                 }
             }
 
-            dataset.attributes = normalizedAttributes;
+            dataset.normalizedAttributes = normalizedAttributes;
             textBoxLog.Text += $"Dataset normalized.{Environment.NewLine}";
             ScrollLogToBottom();
         }
@@ -183,7 +185,140 @@ namespace MIW_P2
 
         private void buttonClassify_Click(object sender, EventArgs e)
         {
+            string[] dataStringArray = textBoxDataToClassify.Text.Trim().Split(" ");
+            if (dataStringArray.Length != dataset.attributes.Count - 1)
+            {
+                MessageBox.Show($"Wrong classification data length (Length should be {dataset.attributes.Count-1})");
+            }
+            else if (textBoxK.Text.Length == 0)
+            {
+                MessageBox.Show("Please specify k parameter");
+            }
+            else
+            {
+                //Convert string array to List<double>
+                List<double> objectToClassify = new List<double>();
+                foreach (var dataString in dataStringArray)
+                {
+                    objectToClassify.Add(Double.Parse(dataString));
+                }
+                List<List<double>> transposedList = TransposeList(dataset.normalizedAttributes);
+                List<List<double>> calculatedMetricValues = new List<List<double>>();
+                foreach (var classifiedObject in transposedList)
+                {
+                    List<double> tmp = new List<double>();
+                    switch (comboBox1.Text)
+                    {
+                        case "Manhattan":
+                            tmp = Manhattan(classifiedObject, objectToClassify);
+                            break;
+                        case "Czybyszew":
+                            tmp = Czybyszew(classifiedObject, objectToClassify);
+                            break;
+                        case "Minkowski":
+                            tmp = Minkowski(classifiedObject, objectToClassify);
+                            break;
+                        case "Logarithm":
+                            tmp = Logarithm(classifiedObject, objectToClassify);
+                            break;
+                        default:
+                            tmp = Euclidean(classifiedObject, objectToClassify);
+                            break;
 
+                    }
+                    calculatedMetricValues.Add(tmp);
+                }
+            }
+        }
+
+        List<double> Manhattan(List<double> classifiedObject, List<double> objectToClassify)
+        {
+            List<double> result = new List<double>(2);
+
+            double x = 0;
+            for (int i = 0; i < objectToClassify.Count; i++)
+            {
+                x += Math.Abs(classifiedObject[i] - objectToClassify[i]);
+            }
+            result.Add(x);
+
+            result.Add(classifiedObject.Last());
+            return result;
+        }
+
+        List<double> Euclidean(List<double> classifiedObject, List<double> objectToClassify)
+        {
+            List<double> result = new List<double>(2);
+
+            double x = 0;
+            for (int i = 0; i < objectToClassify.Count; i++)
+            {
+                x += Math.Pow(classifiedObject[i] - objectToClassify[i], 2);
+            }
+            result.Add(Math.Sqrt(x));
+
+            result.Add(classifiedObject.Last());
+            return result;
+        }
+
+        List<double> Czybyszew(List<double> classifiedObject, List<double> objectToClassify)
+        {
+            List<double> result = new List<double>(2);
+
+            double x = Math.Abs(classifiedObject.Max()-objectToClassify.Max());
+            result.Add(x);
+
+            result.Add(classifiedObject.Last());
+            return result;
+        }
+
+        List<double> Minkowski(List<double> classifiedObject, List<double> objectToClassify)
+        {
+            List<double> result = new List<double>(2);
+            int p = Int32.Parse(textBox1.Text);
+
+            double x = 0;
+            for (int i = 0; i < objectToClassify.Count; i++)
+            {
+                x += Math.Pow(Math.Abs(classifiedObject[i] - objectToClassify[i]), p);
+            }
+            result.Add(Math.Pow(x, (float)1/p));
+
+            result.Add(classifiedObject.Last());
+            return result;
+        }
+
+        List<double> Logarithm(List<double> classifiedObject, List<double> objectToClassify)
+        {
+            List<double> result = new List<double>(2);
+
+            double x = 0;
+            for (int i = 0; i < objectToClassify.Count; i++)
+            {
+                x += Math.Abs(Math.Log10(classifiedObject[i]) - Math.Log10(objectToClassify[i]));
+            }
+            result.Add(x);
+
+            result.Add(classifiedObject.Last());
+            return result;
+        }
+
+        //Works only if there is the same number of columns in each row
+        List<List<double>> TransposeList(List<List<double>> a)
+        {
+            List<List<double>> result = new List<List<double>>();
+            int columns = a.Count;
+            int rows = a[0].Count;
+            for (int i = 0; i < rows; i++)
+            {
+                List<double> tmp = new List<double>();
+                for (int j = 0; j < columns; j++)
+                {
+                    tmp.Add(a[j][i]);
+                }
+                result.Add(tmp);
+            }
+            return result;
         }
     }
 }

@@ -46,8 +46,10 @@ namespace MIW_P2
             this.buttonClassify = new System.Windows.Forms.Button();
             this.buttonClearData = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,12 +100,13 @@ namespace MIW_P2
             this.textBoxDataToClassify.PlaceholderText = "Values separated by space (ex. 1 2 3 4 5 ...)";
             this.textBoxDataToClassify.Size = new System.Drawing.Size(425, 23);
             this.textBoxDataToClassify.TabIndex = 4;
+            this.textBoxDataToClassify.Text = "1 2 3 4 5 6 7 8 9 10 11 12 13 14";
             // 
             // textBoxK
             // 
             this.textBoxK.Location = new System.Drawing.Point(122, 161);
             this.textBoxK.Name = "textBoxK";
-            this.textBoxK.Size = new System.Drawing.Size(61, 23);
+            this.textBoxK.Size = new System.Drawing.Size(46, 23);
             this.textBoxK.TabIndex = 5;
             // 
             // label2
@@ -164,6 +167,7 @@ namespace MIW_P2
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(103, 23);
             this.comboBox1.TabIndex = 11;
+            this.comboBox1.Text = "Euclidean";
             // 
             // label5
             // 
@@ -200,18 +204,28 @@ namespace MIW_P2
             // 
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(189, 144);
+            this.groupBox1.Location = new System.Drawing.Point(261, 144);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(172, 40);
+            this.groupBox1.Size = new System.Drawing.Size(100, 40);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Method:";
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(63, 17);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(31, 19);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.Text = "II";
+            this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(36, 17);
+            this.radioButton1.Location = new System.Drawing.Point(15, 17);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(28, 19);
             this.radioButton1.TabIndex = 0;
@@ -219,21 +233,30 @@ namespace MIW_P2
             this.radioButton1.Text = "I";
             this.radioButton1.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // textBox1
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(115, 17);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(31, 19);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "II";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.textBox1.Location = new System.Drawing.Point(174, 160);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(76, 23);
+            this.textBox1.TabIndex = 16;
+            this.textBox1.Text = "1";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(174, 143);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(85, 15);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "p (Minkowski):";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 450);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonClearData);
             this.Controls.Add(this.buttonClassify);
@@ -283,6 +306,8 @@ namespace MIW_P2
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label6;
     }
 }
 

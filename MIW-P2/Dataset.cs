@@ -10,11 +10,13 @@ namespace MIW_P2
     {
         public List<List<object>> attributes;
         public List<string> attributeTypes;
+        public List<List<double>> normalizedAttributes;
 
         public Dataset()
         {
             attributes = new List<List<object>>();
             attributeTypes = new List<string>();
+            normalizedAttributes = new List<List<double>>();
         }
     }
 }
