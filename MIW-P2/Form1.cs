@@ -240,14 +240,8 @@ namespace MIW_P2
                     else
                     {
                         int k = Int32.Parse(textBoxK.Text);
-                        List<List<double>> sortedList = calculatedMetricValues.OrderBy(x => x[0]).ToList();
-                        List<List<double>> smallestValues = new List<List<double>>();
-                        for (int i = 0; i < k; i++)
-                        {
-                            smallestValues.Add(sortedList[i]);
-                        }
-                        double decision = MakeDecision(smallestValues);
-                        textBoxLog.Text += $"Decision for given data is: {decision}.{Environment.NewLine}";
+                        Dictionary<string, string> decision = ClassifyMethodFirst(k, calculatedMetricValues);
+                        textBoxLog.Text += $"knn {decision.First().Key} the data ({decision.First().Value}).{Environment.NewLine}";
                         ScrollLogToBottom();
                     }
                 }
@@ -257,6 +251,19 @@ namespace MIW_P2
                     
                 }
             }
+        }
+
+        //METHOD 1 (TAKE k SMALLEST VALUES FROM CALCULATED METRIC VALUES)
+        Dictionary<string, string> ClassifyMethodFirst(int k, List<List<double>> calculatedMetricValues)
+        {
+            List<List<double>> sortedList = calculatedMetricValues.OrderBy(x => x[0]).ToList();
+            List<List<double>> smallestValues = new List<List<double>>();
+            for (int i = 0; i < k; i++)
+            {
+                smallestValues.Add(sortedList[i]);
+            }
+            Dictionary<string, string> decision = MakeDecision(smallestValues);
+            return decision;
         }
 
         List<double> Manhattan(List<double> classifiedObject, List<double> objectToClassify)
@@ -349,22 +356,33 @@ namespace MIW_P2
             return result;
         }
 
-        double MakeDecision(List<List<double>> data)
+        Dictionary<string, string> MakeDecision(List<List<double>> data)
         {
-            Dictionary<double, int> dict = new Dictionary<double, int>();
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            Dictionary<string, string> result = new Dictionary<string, string>();
             foreach (var x in data)
             {
-                if (!dict.ContainsKey(x[1]))
+                if (!dict.ContainsKey(x[1].ToString()))
                 {
-                    dict.Add(x[1], 1);
+                    dict.Add(x[1].ToString(), 1);
                 }
                 else
                 {
-                    dict[x[1]] += 1;
+                    dict[x[1].ToString()] += 1;
                 }
             }
-            //return key of greatest value
-            return dict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+            //sort dictionary
+            dict = dict.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            if (dict.Count>1 && dict.Last().Value == dict.SkipLast(1).Last().Value)
+            {
+                result.Add("can't classify", "?");
+            }
+            else
+            {
+                result.Add("classified", $"{dict.Last().Key}");
+            }
+
+            return result;
         }
 
     }
