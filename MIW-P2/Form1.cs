@@ -310,7 +310,6 @@ namespace MIW_P2
                 //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
                 else
                 {
-                    //TODO CHANGE CLASSIFICATION TO SYMBOL NOT bujf
                     //TODO METHOD 2 
                     //TODO PERCENTAGE OF CORRECT NORMALIZATION
                 }
@@ -443,9 +442,15 @@ namespace MIW_P2
             }
             else
             {
-                result.Add("classified", $"{dict.Last().Key}");
+                if (dataset.attributeTypes.Last() == "numeric")
+                {
+                    result.Add("classified", $"{dict.Last().Key}");
+                }
+                else
+                {
+                    result.Add("classified", $"{dataset.stringAssignmentValues.Last().FirstOrDefault(x => x.Value == Convert.ToDouble(dict.Last().Key)).Key}");
+                }
             }
-
             return result;
         }
 
