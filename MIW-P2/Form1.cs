@@ -245,6 +245,10 @@ namespace MIW_P2
             {
                 MessageBox.Show("Please specify k parameter");
             }
+            else if (dataStringArray.Contains("?"))
+            {
+                MessageBox.Show("Object you try to classify has missing data");
+            }
             else
             {
                 // TODO NORMALIZE OBJ TO CLASSIFY BEFORE CLASSIFICATION
