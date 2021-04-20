@@ -89,6 +89,7 @@ namespace MIW_P2
                         }
                     }
                 }
+                CalculateRangeForDataset();
                 textBoxLog.Text += $"Dataset loaded.{Environment.NewLine}";
                 buttonLoadData.Enabled = false;
                 buttonLoadData.Text = "Dataset loaded";
@@ -96,6 +97,40 @@ namespace MIW_P2
                 buttonClearData.Enabled = true;
                 NormalizeData();
                 ScrollLogToBottom();
+            }
+        }
+
+        void CalculateRangeForDataset()
+        {
+            for (int i = 0; i < dataset.attributes.Count; i++)
+            {
+                List<float> columnRange = new List<float>();
+                if (dataset.attributeTypes[i] == "numeric")
+                {
+                    List<float> tmp = new List<float>();
+                    foreach (var x in dataset.attributes[i])
+                    {
+                        if (Convert.ToString(x) == "?")
+                        {
+                            tmp.Add(tmp[0]);
+                        }
+                        else
+                        {
+                            tmp.Add(Convert.ToSingle(x));
+                        }
+                    }
+
+                    var min = tmp.Min();
+                    var max = tmp.Max();
+                    columnRange.Add(min);
+                    columnRange.Add(max);
+                }
+                else
+                {
+                    columnRange.Add(0);
+                    columnRange.Add(0);
+                }
+                dataset.attributeRanges.Add(columnRange);
             }
         }
 
@@ -143,12 +178,17 @@ namespace MIW_P2
                         normalizedColumn.Add(normalizedValue);
                     }
                     normalizedAttributes.Add(normalizedColumn);
+                    //add placeholder for string assignment
+                    Dictionary<string, double> placeholder = new Dictionary<string, double>();
+                    placeholder.Add("0",0);
+                    dataset.stringAssignmentValues.Add(placeholder);
                 }
                 else
                 {
                     List<string> uniqueStrings = CreateUniqueList(dataset.attributes[i]);
                     int length = uniqueStrings.Count;
                     List<double> normalizedColumn = new List<double>();
+                    Dictionary<string, double> stringAssignment = new Dictionary<string, double>();
                     foreach (var x in dataset.attributes[i])
                     {
                         double tmp;
@@ -158,10 +198,21 @@ namespace MIW_P2
                         }
                         else
                         {
-                            tmp = uniqueStrings.IndexOf(Convert.ToString(x)) / ((double)length - 1);
+                            string str = Convert.ToString(x);
+                            tmp = uniqueStrings.IndexOf(str) / ((double)length - 1);
                         }
                         normalizedColumn.Add(tmp);
                     }
+
+                    //add assigned value to string assignment values list
+                    foreach (var uniqueString in uniqueStrings)
+                    {
+                        if (!stringAssignment.ContainsKey(uniqueString))
+                        {
+                            stringAssignment.Add(uniqueString, uniqueStrings.IndexOf(uniqueString) / ((double)length - 1));
+                        }
+                    }
+                    dataset.stringAssignmentValues.Add(stringAssignment);
                     normalizedAttributes.Add(normalizedColumn);
                 }
             }
@@ -196,11 +247,22 @@ namespace MIW_P2
             }
             else
             {
+                // TODO NORMALIZE OBJ TO CLASSIFY BEFORE CLASSIFICATION
                 //Convert string array to List<double>
                 List<double> objectToClassify = new List<double>();
-                foreach (var dataString in dataStringArray)
+                for (int i = 0; i < dataStringArray.Length; i++)
                 {
-                    objectToClassify.Add(Double.Parse(dataString));
+                    if (dataset.attributeTypes[i] == "numeric")
+                    {
+                        double tmp = Double.Parse(dataStringArray[i]);
+                        tmp = (tmp - dataset.attributeRanges[i][0]) / (dataset.attributeRanges[i][1] - dataset.attributeRanges[i][0]);
+                        objectToClassify.Add(tmp);
+                    }
+                    else
+                    {
+                        double tmp = dataset.stringAssignmentValues[i][dataStringArray[i]];
+                        objectToClassify.Add(tmp);
+                    }
                 }
                 //Calculate metric values
                 List<List<double>> transposedList = TransposeList(dataset.normalizedAttributes);
@@ -248,7 +310,9 @@ namespace MIW_P2
                 //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
                 else
                 {
-                    
+                    //TODO CHANGE CLASSIFICATION TO SYMBOL NOT bujf
+                    //TODO METHOD 2 
+                    //TODO PERCENTAGE OF CORRECT NORMALIZATION
                 }
             }
         }
