@@ -14,6 +14,7 @@ namespace MIW_P2
     public partial class Form1 : Form
     {
         private Dataset dataset = new Dataset();
+
         public Form1()
         {
             InitializeComponent();
@@ -52,7 +53,7 @@ namespace MIW_P2
                             if (n == 0)
                             {
                                 textBoxLog.Text += $"Column nr {i} is numeric.{Environment.NewLine}";
-                                dataset.attributes.Add(new List<object>(lines.Length) { f });
+                                dataset.attributes.Add(new List<object>(lines.Length) {f});
                                 dataset.attributeTypes.Add("numeric");
                             }
                             else
@@ -65,7 +66,7 @@ namespace MIW_P2
                             if (n == 0)
                             {
                                 textBoxLog.Text += $"Column nr {i} is a symbol.{Environment.NewLine}";
-                                dataset.attributes.Add(new List<object>(lines.Length) { columns[i] });
+                                dataset.attributes.Add(new List<object>(lines.Length) {columns[i]});
                                 dataset.attributeTypes.Add("symbol");
                             }
                             else
@@ -79,7 +80,7 @@ namespace MIW_P2
                             if (n == 0)
                             {
                                 textBoxLog.Text += $"Column nr {i} is a string.{Environment.NewLine}";
-                                dataset.attributes.Add(new List<object>(lines.Length) { columns[i] });
+                                dataset.attributes.Add(new List<object>(lines.Length) {columns[i]});
                                 dataset.attributeTypes.Add("string");
                             }
                             else
@@ -89,6 +90,7 @@ namespace MIW_P2
                         }
                     }
                 }
+
                 CalculateRangeForDataset();
                 textBoxLog.Text += $"Dataset loaded.{Environment.NewLine}";
                 buttonLoadData.Enabled = false;
@@ -130,6 +132,7 @@ namespace MIW_P2
                     columnRange.Add(0);
                     columnRange.Add(0);
                 }
+
                 dataset.attributeRanges.Add(columnRange);
             }
         }
@@ -169,18 +172,20 @@ namespace MIW_P2
                             tmpList.Add(Convert.ToSingle(f));
                         }
                     }
-                    double maximum = (double)tmpList.Max();
-                    double minimum = (double)tmpList.Min();
+
+                    double maximum = (double) tmpList.Max();
+                    double minimum = (double) tmpList.Min();
                     List<double> normalizedColumn = new List<double>(dataset.attributes[i].Count);
                     for (int j = 0; j < dataset.attributes[i].Count; j++)
                     {
-                        double normalizedValue = ((double)tmpList[j] - minimum) / (maximum - minimum);
+                        double normalizedValue = ((double) tmpList[j] - minimum) / (maximum - minimum);
                         normalizedColumn.Add(normalizedValue);
                     }
+
                     normalizedAttributes.Add(normalizedColumn);
                     //add placeholder for string assignment
                     Dictionary<string, double> placeholder = new Dictionary<string, double>();
-                    placeholder.Add("0",0);
+                    placeholder.Add("0", 0);
                     dataset.stringAssignmentValues.Add(placeholder);
                 }
                 else
@@ -199,8 +204,9 @@ namespace MIW_P2
                         else
                         {
                             string str = Convert.ToString(x);
-                            tmp = uniqueStrings.IndexOf(str) / ((double)length - 1);
+                            tmp = uniqueStrings.IndexOf(str) / ((double) length - 1);
                         }
+
                         normalizedColumn.Add(tmp);
                     }
 
@@ -209,9 +215,11 @@ namespace MIW_P2
                     {
                         if (!stringAssignment.ContainsKey(uniqueString))
                         {
-                            stringAssignment.Add(uniqueString, uniqueStrings.IndexOf(uniqueString) / ((double)length - 1));
+                            stringAssignment.Add(uniqueString,
+                                uniqueStrings.IndexOf(uniqueString) / ((double) length - 1));
                         }
                     }
+
                     dataset.stringAssignmentValues.Add(stringAssignment);
                     normalizedAttributes.Add(normalizedColumn);
                 }
@@ -221,6 +229,7 @@ namespace MIW_P2
             textBoxLog.Text += $"Dataset normalized.{Environment.NewLine}";
             ScrollLogToBottom();
         }
+
         public List<string> CreateUniqueList(List<object> list)
         {
             List<string> result = new List<string>();
@@ -231,6 +240,7 @@ namespace MIW_P2
                     result.Add(Convert.ToString(list[i]));
                 }
             }
+
             return result;
         }
 
@@ -239,7 +249,7 @@ namespace MIW_P2
             string[] dataStringArray = textBoxDataToClassify.Text.Trim().Split(" ");
             if (dataStringArray.Length != dataset.attributes.Count - 1)
             {
-                MessageBox.Show($"Wrong classification data length (Length should be {dataset.attributes.Count-1})");
+                MessageBox.Show($"Wrong classification data length (Length should be {dataset.attributes.Count - 1})");
             }
             else if (textBoxK.Text.Length == 0)
             {
@@ -251,7 +261,6 @@ namespace MIW_P2
             }
             else
             {
-                // TODO NORMALIZE OBJ TO CLASSIFY BEFORE CLASSIFICATION
                 //Convert string array to List<double>
                 List<double> objectToClassify = new List<double>();
                 for (int i = 0; i < dataStringArray.Length; i++)
@@ -259,7 +268,8 @@ namespace MIW_P2
                     if (dataset.attributeTypes[i] == "numeric")
                     {
                         double tmp = Double.Parse(dataStringArray[i]);
-                        tmp = (tmp - dataset.attributeRanges[i][0]) / (dataset.attributeRanges[i][1] - dataset.attributeRanges[i][0]);
+                        tmp = (tmp - dataset.attributeRanges[i][0]) /
+                              (dataset.attributeRanges[i][1] - dataset.attributeRanges[i][0]);
                         objectToClassify.Add(tmp);
                     }
                     else
@@ -268,6 +278,7 @@ namespace MIW_P2
                         objectToClassify.Add(tmp);
                     }
                 }
+
                 //Calculate metric values
                 List<List<double>> transposedList = TransposeList(dataset.normalizedAttributes);
                 List<List<double>> calculatedMetricValues = new List<List<double>>();
@@ -292,29 +303,65 @@ namespace MIW_P2
                             tmp = Euclidean(classifiedObject, objectToClassify);
                             break;
                     }
+
                     calculatedMetricValues.Add(tmp);
                 }
+
                 //Classify object
                 //METHOD 1 (TAKE k SMALLEST VALUES FROM CALCULATED METRIC VALUES)
                 if (radioButton1.Checked)
                 {
                     if (Int32.Parse(textBoxK.Text) > calculatedMetricValues.Count || Int32.Parse(textBoxK.Text) <= 0)
                     {
-                        MessageBox.Show($"Invalid k value (Max = {calculatedMetricValues.Count} for this data and method)");
+                        MessageBox.Show(
+                            $"Invalid k value (Max = {calculatedMetricValues.Count} for this data and method)");
                         return;
                     }
                     else
                     {
                         int k = Int32.Parse(textBoxK.Text);
                         Dictionary<string, string> decision = ClassifyMethodFirst(k, calculatedMetricValues);
-                        textBoxLog.Text += $"knn {decision.First().Key} the data ({decision.First().Value}).{Environment.NewLine}";
+                        textBoxLog.Text +=
+                            $"knn {decision.First().Key} the data ({decision.First().Value}).{Environment.NewLine}";
                         ScrollLogToBottom();
                     }
                 }
                 //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
                 else
                 {
-                    //TODO METHOD 2 
+                    //check how many records have each class
+                    Dictionary<double, int> classCount = new Dictionary<double, int>();
+                    foreach (var x in calculatedMetricValues)
+                    {
+                        if (classCount.ContainsKey(x[1]))
+                        {
+                            classCount[x[1]] += 1;
+                        }
+                        else
+                        {
+                            classCount.Add(x[1], 1);
+                        }
+                    }
+                    //sort dictionary by count of records for each class
+                    classCount = classCount.OrderBy(i => i.Value).ToDictionary(i => i.Key, i=> i.Value);
+                    //extract smallest k
+                    int smallestK = classCount.First().Value;
+                    dataset.amountOfUniqueClassificationClasses = classCount.Count;
+                    if (Int32.Parse(textBoxK.Text) > smallestK || Int32.Parse(textBoxK.Text) <= 0)
+                    {
+                        MessageBox.Show(
+                            $"Invalid k value (Max = {smallestK} for this data and method)");
+                        return;
+                    }
+                    else
+                    {
+                        int k = Int32.Parse(textBoxK.Text);
+                        Dictionary<string, string> decision = ClassifyMethodSecond(k, calculatedMetricValues);
+                        textBoxLog.Text +=
+                            $"knn {decision.First().Key} the data ({decision.First().Value}).{Environment.NewLine}";
+                        ScrollLogToBottom();
+                    }
+                    
                     //TODO PERCENTAGE OF CORRECT NORMALIZATION
                 }
             }
@@ -323,14 +370,65 @@ namespace MIW_P2
         //METHOD 1 (TAKE k SMALLEST VALUES FROM CALCULATED METRIC VALUES)
         Dictionary<string, string> ClassifyMethodFirst(int k, List<List<double>> calculatedMetricValues)
         {
+            //calculatedMetricValues[x] = [metric value, decision]
             List<List<double>> sortedList = calculatedMetricValues.OrderBy(x => x[0]).ToList();
             List<List<double>> smallestValues = new List<List<double>>();
             for (int i = 0; i < k; i++)
             {
                 smallestValues.Add(sortedList[i]);
             }
-            Dictionary<string, string> decision = MakeDecision(smallestValues);
+
+            Dictionary<string, string> decision = MakeDecisionOne(smallestValues);
             return decision;
+        }
+
+        Dictionary<string, string> ClassifyMethodSecond(int k, List<List<double>> calculatedMetricValues)
+        {
+            //calculatedMetricValues[x] = [metric value, decision]
+            List<List<double>> sortedList = calculatedMetricValues.OrderBy(x => x[0]).ToList();
+            Dictionary<double, List<double>> smallestValues = new Dictionary<double, List<double>>();
+            //take k smallest values from each class and sum them
+            //smallestvalues[class] = [sum, amount]
+            Dictionary<string, string> decision = new Dictionary<string, string>();
+            foreach (var classifiedMetricValue in sortedList)
+            {
+                
+                if (smallestValues.ContainsKey(classifiedMetricValue[1]))
+                {
+                    if (smallestValues[classifiedMetricValue[1]][1] < k)
+                    {
+                        smallestValues[classifiedMetricValue[1]][0] += classifiedMetricValue[0];
+                        smallestValues[classifiedMetricValue[1]][1] += 1;
+                    }
+                }
+                else
+                {
+                    List<double> tmp = new List<double>();
+                    tmp.Add(classifiedMetricValue[0]);
+                    tmp.Add(1);
+                    smallestValues.Add(classifiedMetricValue[1], tmp);
+                }
+
+                if (smallestValues.Count == dataset.amountOfUniqueClassificationClasses &&
+                    isAmountCorrect(smallestValues, k))
+                {
+                    decision = MakeDecisionTwo(smallestValues);
+                }
+            }
+            return decision;
+        }
+
+        //check if every list in list have expected value
+        bool isAmountCorrect(Dictionary<double, List<double>> values, int k)
+        {
+            foreach (var list in values)
+            {
+                if (list.Value[1] < k)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         List<double> Manhattan(List<double> classifiedObject, List<double> objectToClassify)
@@ -342,6 +440,7 @@ namespace MIW_P2
             {
                 x += Math.Abs(classifiedObject[i] - objectToClassify[i]);
             }
+
             result.Add(x);
 
             result.Add(classifiedObject.Last());
@@ -357,6 +456,7 @@ namespace MIW_P2
             {
                 x += Math.Pow(classifiedObject[i] - objectToClassify[i], 2);
             }
+
             result.Add(Math.Sqrt(x));
 
             result.Add(classifiedObject.Last());
@@ -367,7 +467,7 @@ namespace MIW_P2
         {
             List<double> result = new List<double>(2);
 
-            double x = Math.Abs(classifiedObject.Max()-objectToClassify.Max());
+            double x = Math.Abs(classifiedObject.Max() - objectToClassify.Max());
             result.Add(x);
 
             result.Add(classifiedObject.Last());
@@ -384,7 +484,8 @@ namespace MIW_P2
             {
                 x += Math.Pow(Math.Abs(classifiedObject[i] - objectToClassify[i]), p);
             }
-            result.Add(Math.Pow(x, (float)1/p));
+
+            result.Add(Math.Pow(x, (float) 1 / p));
 
             result.Add(classifiedObject.Last());
             return result;
@@ -399,6 +500,7 @@ namespace MIW_P2
             {
                 x += Math.Abs(Math.Log10(classifiedObject[i]) - Math.Log10(objectToClassify[i]));
             }
+
             result.Add(x);
 
             result.Add(classifiedObject.Last());
@@ -418,15 +520,18 @@ namespace MIW_P2
                 {
                     tmp.Add(a[j][i]);
                 }
+
                 result.Add(tmp);
             }
+
             return result;
         }
 
-        Dictionary<string, string> MakeDecision(List<List<double>> data)
+        Dictionary<string, string> MakeDecisionOne(List<List<double>> data)
         {
             Dictionary<string, int> dict = new Dictionary<string, int>();
             Dictionary<string, string> result = new Dictionary<string, string>();
+            //count every class
             foreach (var x in data)
             {
                 if (!dict.ContainsKey(x[1].ToString()))
@@ -438,9 +543,11 @@ namespace MIW_P2
                     dict[x[1].ToString()] += 1;
                 }
             }
+
             //sort dictionary
             dict = dict.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-            if (dict.Count>1 && dict.Last().Value == dict.SkipLast(1).Last().Value)
+            //return most common class
+            if (dict.Count > 1 && dict.Last().Value == dict.SkipLast(1).Last().Value)
             {
                 result.Add("can't classify", "?");
             }
@@ -452,11 +559,42 @@ namespace MIW_P2
                 }
                 else
                 {
-                    result.Add("classified", $"{dataset.stringAssignmentValues.Last().FirstOrDefault(x => x.Value == Convert.ToDouble(dict.Last().Key)).Key}");
+                    result.Add("classified",
+                        $"{dataset.stringAssignmentValues.Last().FirstOrDefault(x => x.Value == Convert.ToDouble(dict.Last().Key)).Key}");
                 }
             }
+
             return result;
         }
 
+        Dictionary<string, string> MakeDecisionTwo(Dictionary<double, List<double>> data)
+        {
+            //data[class] = [sum, amount]
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            SortedList<double, double> sortedResults = new SortedList<double, double>();
+            //sortedresults[x] = [sum, class]
+            foreach (var dictElement in data)
+            {
+                sortedResults.Add(dictElement.Value[0], dictElement.Key);
+            }
+            if (sortedResults.Count > 1 && sortedResults.First().Key == sortedResults.Skip(1).First().Key)
+            {
+                result.Add("can't classify", "?");
+            }
+            else
+            {
+                if (dataset.attributeTypes.Last() == "numeric")
+                {
+                    result.Add("classified", $"{sortedResults.First().Value}");
+                }
+                else
+                {
+                    result.Add("classified",
+                        $"{dataset.stringAssignmentValues.Last().FirstOrDefault(x => x.Value == sortedResults.First().Value).Key}");
+                }
+            }
+            
+            return result;
+        }
     }
 }

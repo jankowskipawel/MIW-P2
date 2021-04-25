@@ -13,6 +13,7 @@ namespace MIW_P2
         public List<List<double>> normalizedAttributes;
         public List<List<float>> attributeRanges;
         public List<Dictionary<string, double>> stringAssignmentValues;
+        public int amountOfUniqueClassificationClasses;
 
         public Dataset()
         {
