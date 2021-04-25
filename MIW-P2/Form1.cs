@@ -97,6 +97,7 @@ namespace MIW_P2
                 buttonLoadData.Text = "Dataset loaded";
                 buttonClassify.Enabled = true;
                 buttonClearData.Enabled = true;
+                buttonClassifyAll.Enabled = true;
                 NormalizeData();
                 ScrollLogToBottom();
             }
@@ -527,6 +528,24 @@ namespace MIW_P2
             return result;
         }
 
+        List<List<object>> TransposeList(List<List<object>> a)
+        {
+            List<List<object>> result = new List<List<object>>();
+            int columns = a.Count;
+            int rows = a[0].Count;
+            for (int i = 0; i < rows; i++)
+            {
+                List<object> tmp = new List<object>();
+                for (int j = 0; j < columns; j++)
+                {
+                    tmp.Add(a[j][i]);
+                }
+
+                result.Add(tmp);
+            }
+            return result;
+        }
+
         Dictionary<string, string> MakeDecisionOne(List<List<double>> data)
         {
             Dictionary<string, int> dict = new Dictionary<string, int>();
@@ -595,6 +614,137 @@ namespace MIW_P2
             }
             
             return result;
+        }
+
+        private void buttonClassifyAll_Click(object sender, EventArgs e)
+        {
+            string[] dataStringArray = textBoxDataToClassify.Text.Trim().Split(" ");
+            if (dataStringArray.Length != dataset.attributes.Count - 1)
+            {
+                MessageBox.Show($"Wrong classification data length (Length should be {dataset.attributes.Count - 1})");
+            }
+            else if (textBoxK.Text.Length == 0)
+            {
+                MessageBox.Show("Please specify k parameter");
+            }
+            else if (dataStringArray.Contains("?"))
+            {
+                MessageBox.Show("Object you try to classify has missing data");
+            }
+            else
+            {
+                int totalObjects = dataset.normalizedAttributes[0].Count;
+                int classifiedObjects = 0;
+                int succesfullyClassifiedObjects = 0;
+                List<List<double>> classificationList = new List<List<double>>();
+
+                for (int i = 0; i < totalObjects; i++)
+                {
+                    classificationList = TransposeList(dataset.normalizedAttributes);
+                    List<double> currentObject = classificationList[i].SkipLast(1).ToList();
+                    string correctClassification = TransposeList(dataset.attributes)[i].Last().ToString();
+                    classificationList.RemoveAt(i);
+
+                    //Calculate metric values
+                    List<List<double>> calculatedMetricValues = new List<List<double>>();
+                    foreach (var classifiedObject in classificationList)
+                    {
+                        List<double> tmp = new List<double>();
+                        switch (comboBox1.Text)
+                        {
+                            case "Manhattan":
+                                tmp = Manhattan(classifiedObject, currentObject);
+                                break;
+                            case "Czybyszew":
+                                tmp = Czybyszew(classifiedObject, currentObject);
+                                break;
+                            case "Minkowski":
+                                tmp = Minkowski(classifiedObject, currentObject);
+                                break;
+                            case "Logarithm":
+                                tmp = Logarithm(classifiedObject, currentObject);
+                                break;
+                            default:
+                                tmp = Euclidean(classifiedObject, currentObject);
+                                break;
+                        }
+
+                        calculatedMetricValues.Add(tmp);
+                    }
+
+                    //Classify object
+                    //METHOD 1 (TAKE k SMALLEST VALUES FROM CALCULATED METRIC VALUES)
+                    if (radioButton1.Checked)
+                    {
+                        if (Int32.Parse(textBoxK.Text) > calculatedMetricValues.Count ||
+                            Int32.Parse(textBoxK.Text) <= 0)
+                        {
+                            MessageBox.Show(
+                                $"Invalid k value (Max = {calculatedMetricValues.Count} for this data and method)");
+                            return;
+                        }
+                        else
+                        {
+                            int k = Int32.Parse(textBoxK.Text);
+                            Dictionary<string, string> decision = ClassifyMethodFirst(k, calculatedMetricValues);
+                            if (decision.First().Key == "classified")
+                            {
+                                classifiedObjects += 1;
+                                if (correctClassification == decision.First().Value)
+                                {
+                                    succesfullyClassifiedObjects += 1;
+                                }
+                            }
+                        }
+                    }
+                    //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
+                    else
+                    {
+                        //check how many records have each class
+                        Dictionary<double, int> classCount = new Dictionary<double, int>();
+                        foreach (var x in calculatedMetricValues)
+                        {
+                            if (classCount.ContainsKey(x[1]))
+                            {
+                                classCount[x[1]] += 1;
+                            }
+                            else
+                            {
+                                classCount.Add(x[1], 1);
+                            }
+                        }
+
+                        //sort dictionary by count of records for each class
+                        classCount = classCount.OrderBy(i => i.Value).ToDictionary(i => i.Key, i => i.Value);
+                        //extract smallest k
+                        int smallestK = classCount.First().Value;
+                        dataset.amountOfUniqueClassificationClasses = classCount.Count;
+                        if (Int32.Parse(textBoxK.Text) > smallestK || Int32.Parse(textBoxK.Text) <= 0)
+                        {
+                            MessageBox.Show(
+                                $"Invalid k value (Max = {smallestK} for this data and method)");
+                            return;
+                        }
+                        else
+                        {
+                            int k = Int32.Parse(textBoxK.Text);
+                            Dictionary<string, string> decision = ClassifyMethodSecond(k, calculatedMetricValues);
+                            if (decision.First().Key == "classified")
+                            {
+                                classifiedObjects += 1;
+                                if (correctClassification == decision.First().Value)
+                                {
+                                    succesfullyClassifiedObjects += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                textBoxLog.Text += $"{Environment.NewLine}Knn classified {classifiedObjects}/{totalObjects} objects ({(classifiedObjects/(float)totalObjects)*100}%){Environment.NewLine}";
+                textBoxLog.Text += $"{succesfullyClassifiedObjects}/{classifiedObjects} were correctly classified ({(succesfullyClassifiedObjects / (float)classifiedObjects) * 100}%){Environment.NewLine}";
+                ScrollLogToBottom();
+            }
         }
     }
 }

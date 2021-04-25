@@ -50,6 +50,7 @@ namespace MIW_P2
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.buttonClassifyAll = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -100,7 +101,7 @@ namespace MIW_P2
             this.textBoxDataToClassify.PlaceholderText = "Values separated by space (ex. 1 2 3 4 5 ...)";
             this.textBoxDataToClassify.Size = new System.Drawing.Size(425, 23);
             this.textBoxDataToClassify.TabIndex = 4;
-            this.textBoxDataToClassify.Text = "1 2 3 4 5 6 7 8 9 10 11 12 13 14";
+            this.textBoxDataToClassify.Text = "1 27 0.75 2 8 8 4.25 1 1 3 1 2 312 151";
             // 
             // textBoxK
             // 
@@ -181,7 +182,7 @@ namespace MIW_P2
             // buttonClassify
             // 
             this.buttonClassify.Enabled = false;
-            this.buttonClassify.Location = new System.Drawing.Point(367, 161);
+            this.buttonClassify.Location = new System.Drawing.Point(367, 165);
             this.buttonClassify.Name = "buttonClassify";
             this.buttonClassify.Size = new System.Drawing.Size(70, 23);
             this.buttonClassify.TabIndex = 13;
@@ -250,11 +251,24 @@ namespace MIW_P2
             this.label6.TabIndex = 17;
             this.label6.Text = "p (Minkowski):";
             // 
+            // buttonClassifyAll
+            // 
+            this.buttonClassifyAll.Enabled = false;
+            this.buttonClassifyAll.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.buttonClassifyAll.Location = new System.Drawing.Point(367, 139);
+            this.buttonClassifyAll.Name = "buttonClassifyAll";
+            this.buttonClassifyAll.Size = new System.Drawing.Size(70, 23);
+            this.buttonClassifyAll.TabIndex = 18;
+            this.buttonClassifyAll.Text = "Classify All";
+            this.buttonClassifyAll.UseVisualStyleBackColor = true;
+            this.buttonClassifyAll.Click += new System.EventHandler(this.buttonClassifyAll_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 450);
+            this.Controls.Add(this.buttonClassifyAll);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
@@ -308,6 +322,7 @@ namespace MIW_P2
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button buttonClassifyAll;
     }
 }
 
