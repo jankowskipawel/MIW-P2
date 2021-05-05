@@ -282,6 +282,7 @@ namespace MIW_P2
 
                 //Calculate metric values
                 List<List<double>> transposedList = TransposeList(dataset.normalizedAttributes);
+                //calculatedMetricValues[x] = [metric value, decision]
                 List<List<double>> calculatedMetricValues = new List<List<double>>();
                 foreach (var classifiedObject in transposedList)
                 {
@@ -382,7 +383,7 @@ namespace MIW_P2
             Dictionary<string, string> decision = MakeDecisionOne(smallestValues);
             return decision;
         }
-
+        //METHOD 2 (TAKE k SMALLEST VALUES FROM EACH DECISION CLASS)
         Dictionary<string, string> ClassifyMethodSecond(int k, List<List<double>> calculatedMetricValues)
         {
             //calculatedMetricValues[x] = [metric value, decision]
@@ -468,8 +469,13 @@ namespace MIW_P2
         {
             List<double> result = new List<double>(2);
 
-            double x = Math.Abs(classifiedObject.Max() - objectToClassify.Max());
-            result.Add(x);
+            //double x = Math.Abs(classifiedObject.Max() - objectToClassify.Max());
+            List<double> x = new List<double>();
+            for (int i = 0; i < objectToClassify.Count; i++)
+            {
+                x.Add(Math.Abs(classifiedObject[i]-objectToClassify[i]));
+            }
+            result.Add(x.Max());
 
             result.Add(classifiedObject.Last());
             return result;
@@ -594,7 +600,15 @@ namespace MIW_P2
             //sortedresults[x] = [sum, class]
             foreach (var dictElement in data)
             {
-                sortedResults.Add(dictElement.Value[0], dictElement.Key);
+                if (!sortedResults.ContainsKey(dictElement.Value[0]))
+                {
+                    sortedResults.Add(dictElement.Value[0], dictElement.Key);
+                }
+                else
+                {
+                    result.Add("can't classify", "?");
+                    return result;
+                }
             }
             if (sortedResults.Count > 1 && sortedResults.First().Key == sortedResults.Skip(1).First().Key)
             {
@@ -619,11 +633,7 @@ namespace MIW_P2
         private void buttonClassifyAll_Click(object sender, EventArgs e)
         {
             string[] dataStringArray = textBoxDataToClassify.Text.Trim().Split(" ");
-            if (dataStringArray.Length != dataset.attributes.Count - 1)
-            {
-                MessageBox.Show($"Wrong classification data length (Length should be {dataset.attributes.Count - 1})");
-            }
-            else if (textBoxK.Text.Length == 0)
+            if (textBoxK.Text.Length == 0)
             {
                 MessageBox.Show("Please specify k parameter");
             }
