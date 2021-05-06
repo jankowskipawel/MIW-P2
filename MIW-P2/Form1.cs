@@ -272,13 +272,15 @@ namespace MIW_P2
             {
                 //Convert string array to List<double>
                 List<double> objectToClassify = new List<double>();
+                float minRange = Convert.ToSingle(textBox2.Text);
+                float maxRange = Convert.ToSingle(textBox3.Text);
                 for (int i = 0; i < dataStringArray.Length; i++)
                 {
                     if (dataset.attributeTypes[i] == "numeric")
                     {
                         double tmp = Double.Parse(dataStringArray[i]);
-                        tmp = (tmp - dataset.attributeRanges[i][0]) /
-                              (dataset.attributeRanges[i][1] - dataset.attributeRanges[i][0]);
+                        tmp = (maxRange - minRange)*((tmp - dataset.attributeRanges[i][0]) /
+                              (dataset.attributeRanges[i][1] - dataset.attributeRanges[i][0]))+minRange;
                         objectToClassify.Add(tmp);
                     }
                     else
@@ -322,6 +324,7 @@ namespace MIW_P2
                 {
                     int k = Int32.Parse(textBoxK.Text);
                     Dictionary<string, string> decision = ClassifyMethodSecond(k, dataset.normalizedAttributes, objectToClassify, metric);
+                    //if k is invalid
                     if (decision.Count == 0)
                     {
                         return;
@@ -521,8 +524,6 @@ namespace MIW_P2
         List<double> Czybyszew(List<double> classifiedObject, List<double> objectToClassify)
         {
             List<double> result = new List<double>(2);
-
-            //double x = Math.Abs(classifiedObject.Max() - objectToClassify.Max());
             List<double> x = new List<double>();
             for (int i = 0; i < objectToClassify.Count; i++)
             {
@@ -696,20 +697,7 @@ namespace MIW_P2
             }
             else
             {
-                string metric;
-                switch (comboBox1.Text)
-                {
-                    case "Manhattan":
-                        metric = "Manhattan"; break;
-                    case "Czybyszew":
-                        metric = "Czybyszew"; break;
-                    case "Minkowski":
-                        metric = "Minkowski"; break;
-                    case "Logarithm":
-                        metric = "Logarithm"; break;
-                    default:
-                        metric = "Euclidean"; break;
-                }
+                string metric = comboBox1.Text;
                 int totalObjects = dataset.normalizedAttributes[0].Count;
                 int classifiedObjects = 0;
                 int succesfullyClassifiedObjects = 0;
@@ -757,7 +745,6 @@ namespace MIW_P2
                                 succesfullyClassifiedObjects += 1;
                             }
                         }
-                        
                     }
                 }
 

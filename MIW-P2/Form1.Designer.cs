@@ -282,6 +282,7 @@ namespace MIW_P2
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(34, 23);
             this.textBox2.TabIndex = 20;
+            this.textBox2.Text = "0";
             // 
             // textBox3
             // 
@@ -289,6 +290,7 @@ namespace MIW_P2
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(39, 23);
             this.textBox3.TabIndex = 21;
+            this.textBox3.Text = "1";
             // 
             // label8
             // 
