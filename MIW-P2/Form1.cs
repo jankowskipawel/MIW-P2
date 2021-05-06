@@ -157,6 +157,8 @@ namespace MIW_P2
         private void NormalizeData()
         {
             List<List<double>> normalizedAttributes = new List<List<double>>(dataset.attributes.Count);
+            float minRange = Convert.ToSingle(textBox2.Text);
+            float maxRange = Convert.ToSingle(textBox3.Text);
             for (int i = 0; i < dataset.attributes.Count; i++)
             {
                 if (dataset.attributeTypes[i] == "numeric")
@@ -173,8 +175,7 @@ namespace MIW_P2
                             tmpList.Add(Convert.ToSingle(f));
                         }
                     }
-                    float minRange = Convert.ToSingle(textBox2.Text);
-                    float maxRange = Convert.ToSingle(textBox3.Text);
+                    
                     double maximum = (double) tmpList.Max();
                     double minimum = (double) tmpList.Min();
                     List<double> normalizedColumn = new List<double>(dataset.attributes[i].Count);
@@ -213,7 +214,7 @@ namespace MIW_P2
                         else
                         {
                             string str = Convert.ToString(x);
-                            tmp = uniqueStrings.IndexOf(str) / ((double) length - 1);
+                            tmp = (maxRange - minRange) * (uniqueStrings.IndexOf(str) / ((double) length - 1))+minRange;
                         }
 
                         normalizedColumn.Add(tmp);
@@ -225,7 +226,7 @@ namespace MIW_P2
                         if (!stringAssignment.ContainsKey(uniqueString))
                         {
                             stringAssignment.Add(uniqueString,
-                                uniqueStrings.IndexOf(uniqueString) / ((double) length - 1));
+                                (maxRange - minRange) * (uniqueStrings.IndexOf(uniqueString) / ((double) length - 1))+minRange);
                         }
                     }
 
