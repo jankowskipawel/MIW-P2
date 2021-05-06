@@ -51,6 +51,10 @@ namespace MIW_P2
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonClassifyAll = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,7 +90,7 @@ namespace MIW_P2
             // 
             // buttonLoadData
             // 
-            this.buttonLoadData.Location = new System.Drawing.Point(158, 61);
+            this.buttonLoadData.Location = new System.Drawing.Point(158, 83);
             this.buttonLoadData.Name = "buttonLoadData";
             this.buttonLoadData.Size = new System.Drawing.Size(121, 23);
             this.buttonLoadData.TabIndex = 3;
@@ -193,7 +197,7 @@ namespace MIW_P2
             // buttonClearData
             // 
             this.buttonClearData.Enabled = false;
-            this.buttonClearData.Location = new System.Drawing.Point(285, 61);
+            this.buttonClearData.Location = new System.Drawing.Point(285, 83);
             this.buttonClearData.Name = "buttonClearData";
             this.buttonClearData.Size = new System.Drawing.Size(122, 23);
             this.buttonClearData.TabIndex = 14;
@@ -263,11 +267,47 @@ namespace MIW_P2
             this.buttonClassifyAll.UseVisualStyleBackColor = true;
             this.buttonClassifyAll.Click += new System.EventHandler(this.buttonClassifyAll_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(161, 60);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(118, 15);
+            this.label7.TabIndex = 19;
+            this.label7.Text = "Normalization range:";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(306, 57);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(34, 23);
+            this.textBox2.TabIndex = 20;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(364, 57);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(39, 23);
+            this.textBox3.TabIndex = 21;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(346, 60);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(12, 15);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "-";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 450);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.buttonClassifyAll);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox1);
@@ -323,6 +363,10 @@ namespace MIW_P2
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button buttonClassifyAll;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label8;
     }
 }
 

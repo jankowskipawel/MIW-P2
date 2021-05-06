@@ -173,14 +173,22 @@ namespace MIW_P2
                             tmpList.Add(Convert.ToSingle(f));
                         }
                     }
-
+                    float minRange = Convert.ToSingle(textBox2.Text);
+                    float maxRange = Convert.ToSingle(textBox3.Text);
                     double maximum = (double) tmpList.Max();
                     double minimum = (double) tmpList.Min();
                     List<double> normalizedColumn = new List<double>(dataset.attributes[i].Count);
                     for (int j = 0; j < dataset.attributes[i].Count; j++)
                     {
-                        double normalizedValue = ((double) tmpList[j] - minimum) / (maximum - minimum);
-                        normalizedColumn.Add(normalizedValue);
+                        if (i == dataset.attributes.Count - 1)
+                        {
+                            normalizedColumn.Add(Convert.ToDouble(dataset.attributes[i][j]));
+                        }
+                        else
+                        {
+                            double normalizedValue = (maxRange-minRange)*((double) tmpList[j] - minimum) / (maximum - minimum) + minRange;
+                            normalizedColumn.Add(normalizedValue);
+                        }
                     }
 
                     normalizedAttributes.Add(normalizedColumn);
@@ -381,25 +389,25 @@ namespace MIW_P2
             List<List<double>> transposedList = TransposeList(data);
             //calculatedMetricValues[x] = [metric value, decision]
             List<List<double>> calculatedMetricValues = new List<List<double>>();
-            foreach (var classifiedObject in transposedList)
+            for (int i = 0; i < transposedList.Count; i++)
             {
                 List<double> tmp = new List<double>();
                 switch (metric)
                 {
                     case "Manhattan":
-                        tmp = Manhattan(classifiedObject, objectToClassify);
+                        tmp = Manhattan(transposedList[i], objectToClassify);
                         break;
                     case "Czybyszew":
-                        tmp = Czybyszew(classifiedObject, objectToClassify);
+                        tmp = Czybyszew(transposedList[i], objectToClassify);
                         break;
                     case "Minkowski":
-                        tmp = Minkowski(classifiedObject, objectToClassify);
+                        tmp = Minkowski(transposedList[i], objectToClassify);
                         break;
                     case "Logarithm":
-                        tmp = Logarithm(classifiedObject, objectToClassify);
+                        tmp = Logarithm(transposedList[i], objectToClassify);
                         break;
                     default:
-                        tmp = Euclidean(classifiedObject, objectToClassify);
+                        tmp = Euclidean(transposedList[i], objectToClassify);
                         break;
                 }
 
